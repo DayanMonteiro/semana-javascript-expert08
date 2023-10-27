@@ -6,13 +6,15 @@ export default class View {
   #txtfileName = document.getElementById("fileName");
   #fileUploadWrapper = document.getElementById("fileUploadWrapper");
   #elapsed = document.getElementById("elapsed");
-
+  /** @type {HTMLCanvasElement} */
   #canvas = document.getElementById("preview-144p");
 
   constructor() {
     this.configureBtnUploadClick();
   }
-
+  getCanvas() {
+    return this.#canvas.transferControlToOffscreen();
+  }
   parseBytesIntoMBAndGB(bytes) {
     const mb = bytes / (1024 * 1024);
     // if mb is greater than 1024, then convert to GB
@@ -22,14 +24,12 @@ export default class View {
     }
     return `${Math.round(mb)}MB`;
   }
-
   configureBtnUploadClick() {
     this.#btnUploadVideo.addEventListener("click", () => {
       // trigger file input
       this.#fileUpload.click();
     });
   }
-
   onChange(fn) {
     return (e) => {
       const file = e.target.files[0];
@@ -47,7 +47,6 @@ export default class View {
   updateElapsedTime(text) {
     this.#elapsed.innerText = text;
   }
-
   configureOnFileChange(fn) {
     this.#fileUpload.addEventListener("change", this.onChange(fn));
   }
